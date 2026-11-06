@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Product Details page for SmartMart online shopping demo.">
+  <title>Product Details | SmartMart</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="navbar">
+    <a href="index.html" class="logo">SmartMart</a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <form class="search-form" action="products.html" method="get" role="search">
+      <label class="visually-hidden" for="searchInput">Search products</label>
+      <input type="search" id="searchInput" name="q" placeholder="Search products...">
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
+    <a href="wishlist.html" class="wishlist-link">Wishlist</a>
+    <a href="cart.html" class="cart-link">Cart (<span id="cartCount">0</span>)</a>
+    <a href="login.html" class="account-link">Login</a>
+  </div>
+</header>
+<main class="container">
+<section class="product-details">
+  <div class="product-gallery"><img src="assets/images/product-1.jpg" alt="Selected product image"></div>
+  <div class="product-information">
+    <p class="eyebrow">Product details</p><h1 id="productName">Wireless Headphones</h1>
+    <p class="product-price" id="productPrice">LKR 8,500.00</p>
+    <p>Enjoy your everyday audio with this quality product. Product information can be loaded from the product JSON data later.</p>
+    <p id="stockStatus">Availability: In stock</p>
+    <label for="productQuantity">Quantity</label><input id="productQuantity" type="number" min="1" value="1">
+    <button type="button" class="add-to-cart" data-product-id="wireless-headphones">Add to Cart</button>
+    <button type="button" id="addToWishlist">Add to Wishlist</button>
+  </div>
+</section>
+<section class="reviews"><h2>Customer Reviews</h2><p>No reviews have been added yet.</p><form id="reviewForm"><label for="reviewRating">Rating</label><select id="reviewRating" required><option value="">Choose a rating</option><option value="5">5 - Excellent</option><option value="4">4 - Very good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select><label for="reviewText">Your review</label><textarea id="reviewText" rows="4" required></textarea><button type="submit">Submit Review</button></form></section>
+</main>
+<footer class="site-footer">
+  <p>&copy; 2026 SmartMart. Educational project for ITE 1713 – Web Design.</p>
+  <nav aria-label="Footer navigation">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="admin-dashboard.html">Demo Admin</a>
+  </nav>
+</footer>
+<script src="js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Login page for SmartMart online shopping demo.">
+  <title>Login | SmartMart</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="navbar">
+    <a href="index.html" class="logo">SmartMart</a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <form class="search-form" action="products.html" method="get" role="search">
+      <label class="visually-hidden" for="searchInput">Search products</label>
+      <input type="search" id="searchInput" name="q" placeholder="Search products...">
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
+    <a href="wishlist.html" class="wishlist-link">Wishlist</a>
+    <a href="cart.html" class="cart-link">Cart (<span id="cartCount">0</span>)</a>
+    <a href="login.html" class="account-link">Login</a>
+  </div>
+</header>
+<main class="container">
+<section class="auth-section"><h1>Customer Login</h1><p>This is a learning demo. Do not enter a real password.</p><form id="loginForm"><label for="loginEmail">Email</label><input id="loginEmail" name="email" type="email" autocomplete="email" required><label for="loginPassword">Demo password</label><input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" required><button type="submit">Login</button></form><p>New to SmartMart? <a href="register.html">Create an account</a></p></section>
+</main>
+<footer class="site-footer">
+  <p>&copy; 2026 SmartMart. Educational project for ITE 1713 – Web Design.</p>
+  <nav aria-label="Footer navigation">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="admin-dashboard.html">Demo Admin</a>
+  </nav>
+</footer>
+<script src="js/app.js" defer></script>
+</body>
+</html>

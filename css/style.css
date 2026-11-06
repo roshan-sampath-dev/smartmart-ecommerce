@@ -1,0 +1,2338 @@
+/* =============================================================================
+   SmartMart – E-Commerce Website
+   style.css  |  ITE 1713 – Web Design  |  University of Moratuwa, BIT
+
+   Pure CSS3 (Flexbox + Grid). No frameworks, no JavaScript, no image assets.
+
+   TABLE OF CONTENTS
+    1. CSS reset and global styles
+    2. Typography and headings
+    3. Container and layout utilities
+    4. Header and navigation bar
+    5. Logo
+    6. Navigation links and hover effects
+    7. Search bar and search button
+    8. Shopping cart link and cart counter
+    9. Wishlist and account links
+   10. Homepage hero section
+   11. Category cards
+   12. Featured products
+   13. Product cards and product prices
+   14. Product catalogue
+   15. Product filters and sorting
+   16. Product details and image gallery
+   17. Customer reviews
+   18. Registration form
+   19. Login form
+   20. Contact form
+   21. Shopping cart page
+   22. Cart item rows and quantity controls
+   23. Cart summary and billing details
+   24. Checkout page
+   25. Order success page
+   26. Customer order history
+   27. Admin dashboard
+   28. Admin statistics cards
+   29. Admin product management
+   30. Admin category management
+   31. Inventory management and stock alerts
+   32. Admin order management
+   33. Footer
+   34. Buttons and reusable form controls
+   35. Loading, empty, success and error states
+   36. Responsive design (tablet, mobile, small phones)
+
+   HOW THIS FILE IS ORGANISED
+   - Base element rules (links, buttons, form controls) are wrapped in :where()
+     so they have zero specificity. Component rules always win, whatever the
+     order in the file. !important appears in only two places: the [hidden]
+     rule and the reduced-motion block.
+   - Some pages are filled in by JavaScript (cart rows, order lists, admin
+     tables, status badges). Those containers already exist in the HTML; this
+     file styles them by ID, and also provides optional "hook" classes
+     (.cart-item, .badge, .alert ...) that your js/app.js can add when it
+     renders content. Hook classes are marked "JS hook" in the comments.
+   ============================================================================= */
+
+
+/* -----------------------------------------------------------------------------
+   DESIGN TOKENS
+   ----------------------------------------------------------------------------- */
+:root {
+  /* Brand palette (from the project brief) */
+  --navy: #142D4E;
+  --blue: #2563EB;
+  --bg: #F4F6F9;
+  --white: #FFFFFF;
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --error: #DC2626;
+  --border: #E5E7EB;
+  --text-secondary: #64748B;
+
+  /* Derived shades (kept for accessible contrast) */
+  --blue-dark: #1D4ED8;        /* hover state, 6.7:1 with white text      */
+  --blue-tint: #EFF4FF;        /* hover / selected backgrounds            */
+  --navy-soft: #1E4170;        /* placeholder behind hero image           */
+  --success-dark: #166534;     /* text on success tint                    */
+  --success-tint: #DCFCE7;
+  --warning-dark: #92400E;     /* text on warning tint                    */
+  --warning-tint: #FEF3C7;
+  --error-dark: #B91C1C;       /* hover state and text on error tint      */
+  --error-tint: #FEE2E2;
+  --info-tint: #DBEAFE;
+  --surface-muted: #EDF1F6;    /* image placeholders, table header        */
+  --border-strong: #7C8AA0;    /* form-control borders (3.5:1 on white)   */
+  --text: #1E293B;             /* body text                               */
+  --text-secondary-on-bg: #5B6B80; /* #64748B is 4.4:1 on --bg; this passes */
+
+  /* Typography (system fonts only: no external requests) */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radius: smaller for controls, larger for bigger surfaces */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Navy-tinted shadows */
+  --shadow-sm: 0 1px 2px rgba(20, 45, 78, 0.06), 0 1px 3px rgba(20, 45, 78, 0.08);
+  --shadow-md: 0 8px 20px rgba(20, 45, 78, 0.10);
+  --ring: 0 0 0 3px rgba(37, 99, 235, 0.22);
+
+  /* Layout */
+  --container-max: 1200px;
+  --gutter: 1.5rem;
+  --content-width: min(100% - 2 * var(--gutter), var(--container-max));
+  --tap: 44px;                 /* minimum touch target */
+  --header-offset: 5.5rem;     /* sticky sidebars sit below the header */
+
+  --ease: 160ms ease;
+}
+
+
+/* =============================================================================
+   1. CSS RESET AND GLOBAL STYLES
+   ============================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote {
+  margin-top: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background-color: var(--surface-muted);   /* neat placeholder while images are missing */
+  color: var(--text-secondary);             /* alt text colour */
+  font-size: 0.875rem;
+}
+
+:where(a) {
+  color: var(--blue);
+  text-underline-offset: 0.2em;
+  transition: color var(--ease);
+}
+
+:where(a:hover) {
+  color: var(--blue-dark);
+}
+
+/* Visible keyboard focus everywhere */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--info-tint);
+  color: var(--navy);
+}
+
+/* The hidden attribute must always win (!important use 1 of 2) */
+[hidden] {
+  display: none !important;
+}
+
+/* Screen-reader-only text (used by the search label) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* =============================================================================
+   2. TYPOGRAPHY AND HEADINGS
+   ============================================================================= */
+h1, h2, h3, h4 {
+  color: var(--navy);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);  margin-bottom: var(--space-3); }
+h2 { font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem); margin-bottom: var(--space-3); }
+h3 { font-size: 1.125rem; margin-bottom: var(--space-2); }
+
+p {
+  margin-bottom: var(--space-4);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+strong {
+  font-weight: 700;
+}
+
+/* Small label above a heading (".eyebrow" in the HTML) */
+.eyebrow {
+  margin-bottom: var(--space-2);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+
+/* =============================================================================
+   3. CONTAINER AND LAYOUT UTILITIES
+   ============================================================================= */
+/* <main class="container"> is a one-column grid: every section stacks with an
+   even gap, and minmax(0, 1fr) stops wide children from forcing overflow. */
+.container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--space-6);
+  flex: 1 0 auto;
+  width: var(--content-width);
+  margin-inline: auto;
+  padding-block: var(--space-6) var(--space-8);
+}
+
+/* Home page sections get a little more air than inner-page sections */
+.hero ~ .categories,
+.hero ~ .featured-products {
+  margin-top: var(--space-4);
+}
+
+/* Page title block at the top of inner pages */
+.page-intro {
+  max-width: 60ch;
+}
+
+.page-intro h1 {
+  margin-bottom: var(--space-2);
+}
+
+.page-intro p {
+  margin-bottom: 0;
+  font-size: 1.0625rem;
+  color: var(--text-secondary-on-bg);
+}
+
+/* Section title row: heading on the left, link / sort control on the right */
+.section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.section-heading h2 {
+  margin: 0 auto 0 0;
+}
+
+.section-heading > a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.section-heading > a:hover {
+  text-decoration: underline;
+}
+
+/* Generic white surface used by forms, summaries and content blocks */
+.content-section,
+.auth-section,
+.contact-section,
+.reviews,
+.wishlist-content,
+.orders-content,
+.admin-content,
+.admin-links,
+.cart-items,
+.cart-summary,
+.checkout-form,
+.checkout-summary,
+.filters,
+.product-details,
+.order-success {
+  padding: var(--space-5);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Small utilities */
+.text-center { text-align: center; }
+.text-muted  { color: var(--text-secondary); }
+
+
+/* =============================================================================
+   4. HEADER AND NAVIGATION BAR
+   ============================================================================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: var(--content-width);
+  margin-inline: auto;
+  padding-block: var(--space-3);
+}
+
+.navbar nav {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.navbar nav ul {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+/* =============================================================================
+   5. LOGO
+   ============================================================================= */
+.logo {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--navy);
+  text-decoration: none;
+}
+
+/* Small blue dot after the wordmark (pure CSS, no image) */
+.logo::after {
+  content: "";
+  width: 0.38em;
+  height: 0.38em;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.logo:hover {
+  color: var(--navy);
+}
+
+
+/* =============================================================================
+   6. NAVIGATION LINKS AND HOVER EFFECTS
+   ============================================================================= */
+.navbar nav a {
+  display: block;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  transition: background-color var(--ease), color var(--ease);
+}
+
+.navbar nav a:hover {
+  background: var(--blue-tint);
+  color: var(--blue-dark);
+}
+
+/* Optional: add aria-current="page" to the active link in your HTML later */
+.navbar nav a[aria-current="page"] {
+  background: var(--blue-tint);
+  color: var(--blue-dark);
+  font-weight: 700;
+}
+
+
+/* =============================================================================
+   7. SEARCH BAR AND SEARCH BUTTON
+   ============================================================================= */
+.search-form {
+  display: flex;
+  flex: 1 1 220px;
+  min-width: 0;
+  max-width: 420px;
+  margin-left: auto;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.search-form:focus-within {
+  border-color: var(--blue);
+  box-shadow: var(--ring);
+}
+
+#searchInput {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The wrapper already shows the focus ring */
+#searchInput:focus {
+  border: 0;
+  box-shadow: none;
+  outline: 2px solid transparent;
+}
+
+#searchBtn {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0.5rem 1.15rem;
+  border-radius: 0;
+}
+
+
+/* =============================================================================
+   8. SHOPPING CART LINK AND CART COUNTER
+   ============================================================================= */
+.wishlist-link,
+.cart-link,
+.account-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--navy);
+  text-decoration: none;
+  transition: background-color var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.wishlist-link:hover,
+.cart-link:hover {
+  background: var(--blue-tint);
+  color: var(--blue-dark);
+}
+
+/* The counter lives inside "Cart (0)". The brackets belong to the HTML text,
+   so the number itself is highlighted rather than turned into a bubble. */
+#cartCount {
+  display: inline-block;
+  min-width: 1ch;
+  margin-inline: 0.1em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--blue);
+}
+
+
+/* =============================================================================
+   9. WISHLIST AND ACCOUNT LINKS
+   ============================================================================= */
+.account-link {
+  border: 1px solid var(--border-strong);
+}
+
+.account-link:hover {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+
+/* =============================================================================
+   10. HOMEPAGE HERO SECTION
+   ============================================================================= */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  overflow: hidden;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.hero .eyebrow {
+  color: #93C5FD;                              /* 7.7:1 on navy */
+}
+
+.hero h1 {
+  max-width: 14ch;
+  margin-bottom: var(--space-4);
+  font-size: clamp(2rem, 1.3rem + 2.8vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--white);
+}
+
+.hero-content p:not(.eyebrow) {
+  max-width: 42ch;
+  margin-bottom: var(--space-5);
+  font-size: 1.125rem;
+  color: #CBD5E1;                              /* 9.3:1 on navy */
+}
+
+.hero-image {
+  position: relative;
+  min-height: 320px;
+  background: var(--navy-soft);
+}
+
+.hero-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: transparent;
+  color: #CBD5E1;
+}
+
+/* "Shop Now" / "Proceed to Checkout" call-to-action styling is in section 34 */
+
+
+/* =============================================================================
+   11. CATEGORY CARDS
+   ============================================================================= */
+.category-container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.category-card {
+  position: relative;                          /* anchors the stretched link below */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--ease), box-shadow var(--ease), transform var(--ease);
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--blue);
+  box-shadow: var(--shadow-md);
+}
+
+.category-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.category-card h2,
+.category-card h3 {
+  margin: var(--space-4) var(--space-4) var(--space-1);
+  font-size: 1.125rem;
+}
+
+.category-card a {
+  margin: 0 var(--space-4) var(--space-4);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Make the whole card clickable without changing the HTML */
+.category-card a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+
+.category-card:hover a {
+  text-decoration: underline;
+}
+
+.category-card a:focus-visible {
+  outline: none;
+}
+
+.category-card a:focus-visible::after {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+
+/* =============================================================================
+   12. FEATURED PRODUCTS
+   ============================================================================= */
+/* The section reuses .section-heading and the product grid from section 13. */
+.featured-products .product-container {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+/* =============================================================================
+   13. PRODUCT CARDS AND PRODUCT PRICES
+   ============================================================================= */
+.product-container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
+}
+
+.product-card:hover,
+.product-card:focus-within {
+  transform: translateY(-3px);
+  border-color: #CBD5E1;
+  box-shadow: var(--shadow-md);
+}
+
+.product-card > a:first-child {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+}
+
+.product-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.product-card h3 {
+  margin: var(--space-2) 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+
+.product-card h3 a {
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.product-card h3 a:hover {
+  color: var(--blue);
+}
+
+.product-price {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+.product-card .product-price {
+  margin-bottom: var(--space-2);
+}
+
+/* Pushes the button to the bottom so cards in a row line up */
+.product-card .add-to-cart {
+  width: 100%;
+  margin-top: auto;
+}
+
+
+/* =============================================================================
+   14. PRODUCT CATALOGUE
+   ============================================================================= */
+.catalogue {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.catalogue-content {
+  min-width: 0;
+}
+
+.catalogue-content .product-container {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+/* =============================================================================
+   15. PRODUCT FILTERS AND SORTING
+   ============================================================================= */
+.filters {
+  position: sticky;
+  top: var(--header-offset);
+}
+
+.filters h2 {
+  margin-bottom: var(--space-4);
+  font-size: 1.125rem;
+}
+
+.filters button {
+  width: 100%;
+  margin-top: var(--space-5);
+}
+
+/* "Sort by" sits in the section heading row beside the title */
+.section-heading label[for="sortProducts"] {
+  margin: 0;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+#sortProducts {
+  width: auto;
+  min-width: 11rem;
+}
+
+
+/* =============================================================================
+   16. PRODUCT DETAILS AND IMAGE GALLERY
+   ============================================================================= */
+.product-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.product-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.product-gallery img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* First image is the large one; any extra images become thumbnails */
+.product-gallery img:first-child {
+  grid-column: 1 / -1;
+}
+
+.product-information h1 {
+  margin-bottom: var(--space-2);
+}
+
+.product-information .product-price {
+  margin-bottom: var(--space-4);
+  font-size: 1.875rem;
+  color: var(--blue);
+}
+
+.product-information > p {
+  max-width: 55ch;
+}
+
+#stockStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--success-dark);
+}
+
+#stockStatus::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* JS hooks: add one of these classes to #stockStatus */
+#stockStatus.low-stock    { color: var(--warning-dark); }
+#stockStatus.out-of-stock { color: var(--error-dark); }
+
+#productQuantity {
+  width: 7rem;
+}
+
+.product-information button {
+  margin-top: var(--space-5);
+  margin-right: var(--space-3);
+}
+
+
+/* =============================================================================
+   17. CUSTOMER REVIEWS
+   ============================================================================= */
+.reviews h2 {
+  margin-bottom: var(--space-4);
+}
+
+.reviews > p {
+  color: var(--text-secondary);
+}
+
+#reviewForm {
+  max-width: 640px;
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+#reviewForm button {
+  margin-top: var(--space-5);
+}
+
+/* JS hooks for rendered reviews */
+.review-item {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-item:last-of-type {
+  border-bottom: 0;
+}
+
+.review-author {
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.review-rating {
+  color: var(--warning);
+  letter-spacing: 0.1em;
+}
+
+
+/* =============================================================================
+   18. REGISTRATION FORM
+   ============================================================================= */
+/* .auth-section is shared by the register and login pages (sections 18 + 19) */
+.auth-section {
+  justify-self: center;
+  width: min(100%, 460px);
+  padding: var(--space-6);
+}
+
+.auth-section h1 {
+  margin-bottom: var(--space-2);
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);
+}
+
+.auth-section > p:first-of-type {
+  color: var(--text-secondary);
+}
+
+.auth-section form {
+  margin-top: var(--space-5);
+}
+
+.auth-section form button[type="submit"] {
+  width: 100%;
+}
+
+.auth-section form + p {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.auth-section form + p a {
+  font-weight: 600;
+}
+
+
+/* =============================================================================
+   19. LOGIN FORM
+   ============================================================================= */
+/* Covered by the shared .auth-section rules above. Login-specific tweak: */
+#loginForm {
+  margin-top: var(--space-4);
+}
+
+
+/* =============================================================================
+   20. CONTACT FORM
+   ============================================================================= */
+.contact-section {
+  width: min(100%, 680px);
+  padding: var(--space-6);
+}
+
+#contactMessage {
+  min-height: 9rem;
+}
+
+
+/* =============================================================================
+   21. SHOPPING CART PAGE
+   ============================================================================= */
+.cart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.cart-items {
+  min-width: 0;
+  padding-block: var(--space-3);
+}
+
+/* About / content pages */
+.content-section {
+  padding: var(--space-6);
+}
+
+.content-section > :where(h2, p) {
+  max-width: 68ch;
+}
+
+.content-section h2:not(:first-child) {
+  margin-top: var(--space-5);
+}
+
+
+/* =============================================================================
+   22. CART ITEM ROWS AND QUANTITY CONTROLS
+   JS hooks: render each cart row as
+   <div class="cart-item"> img.cart-item-image + div.cart-item-info
+   + div.quantity-controls + p.cart-item-total + button.remove-btn </div>
+   ============================================================================= */
+.cart-item {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto auto auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-item:last-child {
+  border-bottom: 0;
+}
+
+.cart-item-image {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.cart-item-info h3 {
+  margin-bottom: var(--space-1);
+  font-size: 1rem;
+}
+
+.cart-item-info p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.cart-item-total {
+  min-width: 6.5rem;
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+.quantity-controls {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.quantity-controls button {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0;
+  font-size: 1.125rem;
+  color: var(--navy);
+  background: var(--white);
+  border: 0;
+  border-radius: 0;
+}
+
+.quantity-controls button:hover {
+  background: var(--blue-tint);
+  color: var(--blue-dark);
+}
+
+.quantity-controls input {
+  width: 3.25rem;
+  min-height: var(--tap);
+  padding: 0 0.25rem;
+  text-align: center;
+  border: 0;
+  border-inline: 1px solid var(--border);
+  border-radius: 0;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.quantity-controls input::-webkit-outer-spin-button,
+.quantity-controls input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.remove-btn {
+  min-height: var(--tap);
+  padding-inline: var(--space-2);
+  color: var(--error);
+  background: transparent;
+  border-color: transparent;
+}
+
+.remove-btn:hover {
+  color: var(--error-dark);
+  background: var(--error-tint);
+  border-color: transparent;
+}
+
+
+/* =============================================================================
+   23. CART SUMMARY AND BILLING DETAILS
+   ============================================================================= */
+.cart-summary {
+  position: sticky;
+  top: var(--header-offset);
+}
+
+.cart-summary h2 {
+  margin-bottom: var(--space-4);
+  font-size: 1.25rem;
+}
+
+/* Each "Label: <strong>value</strong>" line becomes a label/value row */
+.cart-summary p {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-2) 0;
+  color: var(--text-secondary);
+}
+
+.cart-summary p strong {
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+.cart-summary label {
+  margin-top: var(--space-4);
+}
+
+.cart-summary #applyDiscount {
+  width: 100%;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+/* The last paragraph is the grand total */
+.cart-summary p:last-of-type {
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--border);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.cart-summary p:last-of-type strong {
+  font-size: 1.375rem;
+}
+
+.cart-summary .shop-btn {
+  display: flex;
+  width: 100%;
+  margin-top: var(--space-4);
+}
+
+/* JS hook: optional discount feedback line */
+.cart-summary .discount-applied {
+  color: var(--success-dark);
+}
+
+
+/* =============================================================================
+   24. CHECKOUT PAGE
+   ============================================================================= */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.checkout-form {
+  min-width: 0;
+  padding: var(--space-6);
+}
+
+.checkout-form h2 {
+  margin-bottom: var(--space-4);
+  font-size: 1.25rem;
+}
+
+.checkout-form h2:not(:first-child) {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.checkout-form button[type="submit"] {
+  width: 100%;
+  margin-top: var(--space-5);
+}
+
+/* Payment option rendered as a selectable row */
+.checkout-form label:has(input[type="radio"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  font-weight: 500;
+  color: var(--text);
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--ease), background-color var(--ease), box-shadow var(--ease);
+}
+
+.checkout-form label:has(input[type="radio"]:checked) {
+  background: var(--blue-tint);
+  border-color: var(--blue);
+}
+
+.checkout-form label:has(input[type="radio"]:focus-visible) {
+  box-shadow: var(--ring);
+}
+
+.checkout-summary {
+  position: sticky;
+  top: var(--header-offset);
+}
+
+.checkout-summary h2 {
+  margin-bottom: var(--space-4);
+  font-size: 1.25rem;
+}
+
+#checkoutSummary {
+  color: var(--text-secondary);
+}
+
+/* JS hooks for summary lines rendered into #checkoutSummary */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-row.summary-total {
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--border);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+
+/* =============================================================================
+   25. ORDER SUCCESS PAGE
+   ============================================================================= */
+.order-success {
+  justify-self: center;
+  width: min(100%, 560px);
+  padding: var(--space-7) var(--space-6);
+  text-align: center;
+}
+
+/* Tick drawn with a text glyph, so no image file is needed */
+.order-success::before {
+  content: "\2713";
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto var(--space-5);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--success-dark);
+  background: var(--success-tint);
+  border-radius: 50%;
+}
+
+.order-success p {
+  color: var(--text-secondary);
+}
+
+#orderReference {
+  display: inline-block;
+  padding: 0.15rem 0.7rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+  background: var(--blue-tint);
+  border-radius: var(--radius-pill);
+}
+
+/* Two links: first is the primary action, second the secondary one */
+.order-success > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  margin: var(--space-4) var(--space-1) 0;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--white);
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--ease), border-color var(--ease), color var(--ease);
+}
+
+.order-success > a:hover {
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: var(--white);
+}
+
+.order-success > a + a {
+  color: var(--navy);
+  background: var(--white);
+  border-color: var(--border-strong);
+}
+
+.order-success > a + a:hover {
+  background: var(--blue-tint);
+  border-color: var(--blue);
+  color: var(--blue-dark);
+}
+
+
+/* =============================================================================
+   26. CUSTOMER ORDER HISTORY
+   ============================================================================= */
+.orders-content {
+  overflow-x: auto;                            /* wide tables scroll inside the card */
+}
+
+/* JS hooks: one card per order */
+.order-card {
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.order-card:last-child {
+  margin-bottom: 0;
+}
+
+.order-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+
+/* =============================================================================
+   27. ADMIN DASHBOARD
+   ============================================================================= */
+.admin-links h2 {
+  margin-bottom: var(--space-4);
+}
+
+.admin-links ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-links a {
+  display: flex;
+  align-items: center;
+  min-height: 3.5rem;
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  color: var(--navy);
+  text-decoration: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--ease), border-color var(--ease), color var(--ease);
+}
+
+.admin-links a:hover {
+  background: var(--blue-tint);
+  border-color: var(--blue);
+  color: var(--blue-dark);
+}
+
+
+/* =============================================================================
+   28. ADMIN STATISTICS CARDS
+   ============================================================================= */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.admin-stats article {
+  padding: var(--space-5);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--blue);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-stats h2 {
+  margin-bottom: var(--space-2);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-secondary);
+}
+
+.admin-stats article p {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  color: var(--navy);
+}
+
+/* The "Low Stock" card (4th) is the one that needs attention */
+.admin-stats article:last-child {
+  border-top-color: var(--warning);
+}
+
+
+/* =============================================================================
+   29. ADMIN PRODUCT MANAGEMENT
+   ============================================================================= */
+/* .admin-content is shared by the four admin management pages (29 to 32) */
+.admin-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+
+.admin-content h2 {
+  margin-bottom: var(--space-4);
+}
+
+.admin-content form {
+  max-width: 560px;
+}
+
+.admin-content form:not(:last-child) {
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-content form button[type="submit"] {
+  margin-top: var(--space-5);
+}
+
+/* Tables rendered by JS into the admin/order containers scroll inside them */
+#adminProductList,
+#inventoryTable,
+#adminOrdersList,
+#ordersList {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+#adminProductList table,
+#inventoryTable table,
+#adminOrdersList table,
+#ordersList table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+#adminProductList th,
+#inventoryTable th,
+#adminOrdersList th,
+#ordersList th {
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: left;
+  color: var(--navy);
+  background: var(--surface-muted);
+  white-space: nowrap;
+}
+
+#adminProductList td,
+#inventoryTable td,
+#adminOrdersList td,
+#ordersList td {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+
+#adminProductList tbody tr:hover,
+#inventoryTable tbody tr:hover,
+#adminOrdersList tbody tr:hover,
+#ordersList tbody tr:hover {
+  background: var(--blue-tint);
+}
+
+/* Small buttons for table rows (JS hook: add "btn-sm" to row buttons) */
+.btn-sm {
+  min-height: 36px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.875rem;
+}
+
+
+/* =============================================================================
+   30. ADMIN CATEGORY MANAGEMENT
+   ============================================================================= */
+#adminCategoryList ul {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+#adminCategoryList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+#adminCategoryList li:last-child {
+  border-bottom: 0;
+}
+
+#adminCategoryList li:hover {
+  background: var(--blue-tint);
+}
+
+
+/* =============================================================================
+   31. INVENTORY MANAGEMENT AND STOCK ALERTS
+   ============================================================================= */
+.inventory-alerts {
+  padding: var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.inventory-alerts p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+/* JS hooks: put one .stock-alert inside .inventory-alerts per product
+   (.stock-alert-critical for items that are out of stock) */
+.stock-alert {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  color: var(--warning-dark);
+  background: var(--warning-tint);
+  border-left: 4px solid var(--warning);
+  border-radius: var(--radius-sm);
+}
+
+.stock-alert:last-child {
+  margin-bottom: 0;
+}
+
+.stock-alert-critical {
+  color: var(--error-dark);
+  background: var(--error-tint);
+  border-left-color: var(--error);
+}
+
+
+/* =============================================================================
+   32. ADMIN ORDER MANAGEMENT
+   ============================================================================= */
+#orderStatusFilter {
+  max-width: 300px;
+}
+
+.admin-content > label + select {
+  margin-top: calc(var(--space-5) * -0.75);    /* pulls the select up under its label */
+}
+
+/* Status badges (JS hooks: <span class="badge badge-shipped">Shipped</span>).
+   Used for order statuses and for stock labels. */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--navy);
+  background: var(--surface-muted);
+  border-radius: var(--radius-pill);
+}
+
+.badge-pending,
+.badge-warning {
+  color: var(--warning-dark);
+  background: var(--warning-tint);
+}
+
+.badge-confirmed,
+.badge-processing,
+.badge-shipped,
+.badge-info {
+  color: var(--blue-dark);
+  background: var(--info-tint);
+}
+
+.badge-delivered,
+.badge-success {
+  color: var(--success-dark);
+  background: var(--success-tint);
+}
+
+.badge-cancelled,
+.badge-error {
+  color: var(--error-dark);
+  background: var(--error-tint);
+}
+
+
+/* =============================================================================
+   33. FOOTER
+   ============================================================================= */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding-block: var(--space-5);
+  /* Aligns footer content with the centred container on wide screens */
+  padding-inline: max(var(--gutter), calc((100% - var(--container-max)) / 2));
+  color: #CBD5E1;
+  background: var(--navy);
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+
+.site-footer a {
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-weight: 500;
+  color: var(--white);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--ease), color var(--ease);
+}
+
+.site-footer a:hover {
+  color: var(--white);
+  border-bottom-color: currentColor;
+}
+
+
+/* =============================================================================
+   34. BUTTONS AND REUSABLE FORM CONTROLS
+   Zero-specificity base rules (:where) so any component can override them.
+   ============================================================================= */
+
+/* --- Labels ---------------------------------------------------------------- */
+label {
+  display: block;
+  margin: var(--space-4) 0 var(--space-1);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+label:first-child,
+:is(h1, h2, h3) + label {
+  margin-top: 0;
+}
+
+/* --- Text inputs, selects, textareas --------------------------------------- */
+:where(input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]), select, textarea) {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  color: var(--text);
+  background-color: var(--white);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--ease), box-shadow var(--ease), background-color var(--ease);
+}
+
+:where(textarea) {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Selects get a CSS-drawn chevron (no image asset) */
+:where(select) {
+  padding-right: 2.5rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% + 1px),
+    calc(100% - 15px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+:where(input, select, textarea)::placeholder {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+
+:where(input:not([type="radio"]):not([type="checkbox"]), select, textarea):hover {
+  border-color: var(--text-secondary);
+}
+
+:where(input:not([type="radio"]):not([type="checkbox"]), select, textarea):focus {
+  border-color: var(--blue);
+  box-shadow: var(--ring);
+  outline: 2px solid transparent;              /* stays visible in forced-colours mode */
+}
+
+:where(input, select, textarea):disabled {
+  color: var(--text-secondary);
+  background-color: var(--surface-muted);
+  cursor: not-allowed;
+}
+
+/* Validation: kept in separate rules so older browsers ignore only this one */
+input:user-invalid,
+select:user-invalid,
+textarea:user-invalid {
+  border-color: var(--error);
+}
+
+.is-invalid {
+  border-color: var(--error);
+}
+
+.field-error {
+  margin: var(--space-1) 0 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--error-dark);
+}
+
+.form-hint {
+  margin: var(--space-1) 0 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+:where(input[type="radio"], input[type="checkbox"]) {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+/* --- Buttons --------------------------------------------------------------- */
+/* Base = primary button. Also applied to the .shop-btn link and .btn helper. */
+:where(button, .shop-btn, .btn, .btn-primary) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0.65rem 1.25rem;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: var(--white);
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--ease), border-color var(--ease), color var(--ease),
+              box-shadow var(--ease), transform var(--ease);
+}
+
+:where(button, .shop-btn, .btn, .btn-primary):hover {
+  color: var(--white);
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+:where(button, .shop-btn, .btn, .btn-primary):active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+:where(button, .btn):disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Secondary (outline) buttons: existing IDs plus a reusable class */
+.btn-secondary,
+#addToWishlist,
+#applyDiscount {
+  color: var(--navy);
+  background: var(--white);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover,
+#addToWishlist:hover,
+#applyDiscount:hover {
+  color: var(--blue-dark);
+  background: var(--blue-tint);
+  border-color: var(--blue);
+}
+
+/* Danger button (JS hook for delete actions) */
+.btn-danger {
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.btn-danger:hover {
+  background: var(--error-dark);
+  border-color: var(--error-dark);
+}
+
+/* Hero call-to-action gets a little extra presence */
+.hero .shop-btn {
+  min-height: 48px;
+  padding-inline: 1.75rem;
+  font-size: 1.0625rem;
+}
+
+/* Space above submit buttons inside plain forms (not the search bar) */
+form:not(.search-form) button[type="submit"] {
+  margin-top: var(--space-5);
+}
+
+/* Reduced motion (!important use 2 of 2) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* =============================================================================
+   35. LOADING, EMPTY, SUCCESS AND ERROR STATES
+   ============================================================================= */
+
+/* Empty states: the placeholder paragraph that sits alone in a JS container */
+#wishlistItems > p:only-child,
+#cartItems > p:only-child,
+#ordersList > p:only-child,
+#adminOrdersList > p:only-child,
+#inventoryTable > p:only-child,
+#checkoutSummary:empty,
+.product-container > p:only-child,
+.empty-state {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.product-container > p:only-child {
+  grid-column: 1 / -1;
+}
+
+#adminProductList:not(:has(*)) {
+  padding: var(--space-5) 0;
+  color: var(--text-secondary);
+}
+
+.wishlist-content > a {
+  display: inline-block;
+  margin-top: var(--space-4);
+  font-weight: 600;
+}
+
+/* Loading spinner (JS hook: add class "loading" to any container) */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  color: var(--text-secondary);
+}
+
+.loading::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: sm-spin 0.8s linear infinite;
+}
+
+@keyframes sm-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Skeleton placeholder (JS hook) */
+.skeleton {
+  min-height: 1rem;
+  background: linear-gradient(90deg, var(--surface-muted) 25%, var(--bg) 40%, var(--surface-muted) 55%);
+  background-size: 300% 100%;
+  border-radius: var(--radius-sm);
+  animation: sm-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes sm-shimmer {
+  from { background-position: 100% 0; }
+  to   { background-position: 0 0; }
+}
+
+/* Feedback messages (JS hook: <p class="alert alert-success" role="status">) */
+.alert {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.alert-success {
+  color: var(--success-dark);
+  background: var(--success-tint);
+  border-color: var(--success);
+}
+
+.alert-error {
+  color: var(--error-dark);
+  background: var(--error-tint);
+  border-color: var(--error);
+}
+
+.alert-warning {
+  color: var(--warning-dark);
+  background: var(--warning-tint);
+  border-color: var(--warning);
+}
+
+.alert-info {
+  color: var(--blue-dark);
+  background: var(--info-tint);
+  border-color: var(--blue);
+}
+
+
+/* =============================================================================
+   36. RESPONSIVE DESIGN
+   Desktop: 992px and above  (the base styles above)
+   Tablet : 768px to 991px   (block 1; also inherited by mobile)
+   Mobile : below 768px      (block 2 overrides block 1)
+   Small  : below 360px      (block 3, a safety net for very narrow phones)
+   ============================================================================= */
+
+/* ---------- Tablet and below (max-width: 991px) ---------- */
+@media (max-width: 991.98px) {
+
+  /* Header: logo + account links on row 1, menu + search on row 2 */
+  .navbar {
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
+  }
+
+  .logo          { order: 1; }
+  .wishlist-link { order: 2; margin-left: auto; }
+  .cart-link     { order: 3; }
+  .account-link  { order: 4; }
+  .navbar nav    { order: 5; }
+
+  .search-form {
+    order: 6;
+    flex: 1 1 260px;
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .hero-content {
+    padding: var(--space-6);
+  }
+
+  .hero-image {
+    min-height: 280px;
+  }
+
+  /* Grids */
+  .category-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .product-container,
+  .featured-products .product-container { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Catalogue keeps its sidebar, with a narrower rail and two columns */
+  .catalogue { grid-template-columns: 220px minmax(0, 1fr); gap: var(--space-5); }
+  .catalogue-content .product-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .product-details { gap: var(--space-6); }
+
+  /* Cart and checkout stack vertically */
+  .cart-layout,
+  .checkout-layout { grid-template-columns: minmax(0, 1fr); }
+
+  .cart-summary,
+  .checkout-summary { position: static; }
+
+  .admin-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* ---------- Mobile (max-width: 767px) ---------- */
+@media (max-width: 767.98px) {
+
+  :root {
+    --gutter: 1rem;
+  }
+
+  .container {
+    gap: var(--space-5);
+    padding-block: var(--space-5) var(--space-7);
+  }
+
+  /* Surfaces get slightly tighter padding */
+  .content-section,
+  .contact-section,
+  .checkout-form,
+  .admin-content,
+  .auth-section {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .reviews,
+  .wishlist-content,
+  .orders-content,
+  .admin-links,
+  .cart-summary,
+  .checkout-summary,
+  .filters,
+  .product-details {
+    padding: var(--space-4);
+  }
+
+  /* Header: not sticky (three rows would cover too much of the screen) */
+  .site-header {
+    position: static;
+  }
+
+  .navbar {
+    column-gap: var(--space-1);
+  }
+
+  .logo {
+    margin-right: auto;
+    font-size: 1.25rem;
+  }
+
+  .wishlist-link,
+  .cart-link,
+  .account-link {
+    min-height: var(--tap);
+    padding-inline: 0.45rem;
+    font-size: 0.9rem;
+  }
+
+  /* Main menu becomes a swipeable single row; search takes the full width */
+  .navbar nav {
+    flex: 1 1 100%;
+    margin-inline: calc(var(--gutter) * -0.5);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navbar nav ul {
+    gap: 0;
+    padding-inline: calc(var(--gutter) * 0.5);
+    white-space: nowrap;
+  }
+
+  .navbar nav a {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .search-form {
+    flex: 1 1 100%;
+  }
+
+  /* Hero stacks vertically */
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: var(--radius-md);
+  }
+
+  .hero-content {
+    padding: var(--space-5) var(--space-4) var(--space-6);
+  }
+
+  .hero h1 {
+    max-width: none;
+  }
+
+  .hero-content p:not(.eyebrow) {
+    font-size: 1rem;
+  }
+
+  .hero-image {
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+
+  .hero ~ .categories,
+  .hero ~ .featured-products {
+    margin-top: 0;
+  }
+
+  /* Section heading: the title takes its own row so controls can wrap below */
+  .section-heading h2 {
+    flex: 1 1 100%;
+  }
+
+  #sortProducts {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Grids: two columns for compact cards */
+  .category-container,
+  .product-container,
+  .featured-products .product-container,
+  .catalogue-content .product-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .category-card h2,
+  .category-card h3 {
+    margin: var(--space-3) var(--space-3) var(--space-1);
+    font-size: 1rem;
+  }
+
+  .category-card a {
+    margin: 0 var(--space-3) var(--space-3);
+    font-size: 0.9375rem;
+  }
+
+  .product-card {
+    padding: var(--space-2);
+  }
+
+  .product-card h3 {
+    font-size: 1rem;
+  }
+
+  /* Catalogue: filters stack above the products */
+  .catalogue {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filters {
+    position: static;
+  }
+
+  /* Product details stack; actions become full-width touch targets */
+  .product-details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .product-information .product-price {
+    font-size: 1.625rem;
+  }
+
+  .product-information button {
+    width: 100%;
+    margin-right: 0;
+    margin-top: var(--space-3);
+  }
+
+  .product-information #productQuantity + button {
+    margin-top: var(--space-4);
+  }
+
+  /* Forms fit the screen */
+  .auth-section,
+  .contact-section {
+    width: 100%;
+  }
+
+  .contact-section button[type="submit"] {
+    width: 100%;
+  }
+
+  .order-success {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .order-success > a {
+    display: flex;
+    margin: var(--space-3) 0 0;
+  }
+
+  /* Cart rows: image + details on top, controls underneath */
+  .cart-item {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+  }
+
+  .cart-item-image {
+    width: 72px;
+    height: 72px;
+  }
+
+  .cart-item > :nth-child(n + 3) {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .cart-item-total {
+    min-width: 0;
+    text-align: left;
+  }
+
+  /* Admin */
+  .admin-stats {
+    gap: var(--space-3);
+  }
+
+  .admin-stats article {
+    padding: var(--space-4);
+  }
+
+  .admin-links ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-content form {
+    max-width: none;
+  }
+
+  .admin-content form button[type="submit"] {
+    width: 100%;
+  }
+
+  #orderStatusFilter {
+    max-width: none;
+  }
+
+  .btn-sm {
+    min-height: 40px;
+  }
+
+  /* Footer stacks and centres */
+  .site-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .site-footer nav {
+    justify-content: center;
+  }
+}
+
+
+/* ---------- Very small phones (max-width: 359px) ---------- */
+@media (max-width: 359.98px) {
+
+  .category-container,
+  .product-container,
+  .featured-products .product-container,
+  .catalogue-content .product-container,
+  .admin-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-card img {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Logo on its own row, account links beneath it */
+  .logo {
+    flex: 1 1 100%;
+  }
+
+  .navbar nav a {
+    padding-inline: 0.5rem;
+  }
+}
