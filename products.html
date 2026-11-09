@@ -1,144 +1,190 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <meta
-      name="description"
-      content="Products page for SmartMart online shopping demo."
-    />
+        name="description"
+        content="Products page for SmartMart online shopping demo."
+    >
+
     <title>Products | SmartMart</title>
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
     <header class="site-header">
-      <div class="navbar">
-        <a href="index.html" class="logo">SmartMart</a>
-        <nav aria-label="Main navigation">
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="products.html">Products</a></li>
-            <li><a href="categories.html">Categories</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-          </ul>
-        </nav>
-        <form
-          class="search-form"
-          action="products.html"
-          method="get"
-          role="search"
-        >
-          <label class="visually-hidden" for="searchInput"
-            >Search products</label
-          >
-          <input
-            type="search"
-            id="searchInput"
-            name="q"
-            placeholder="Search products..."
-          />
-          <button type="submit" id="searchBtn">Search</button>
-        </form>
-        <a href="wishlist.html" class="wishlist-link">Wishlist</a>
-        <a href="cart.html" class="cart-link"
-          >Cart (<span id="cartCount">0</span>)</a
-        >
-        <a href="login.html" class="account-link">Login</a>
-      </div>
-    </header>
-    <main class="container">
-      <section class="page-intro">
-        <h1>All Products</h1>
-        <p>Browse our products and find what you need.</p>
-      </section>
-      <section class="catalogue">
-        <aside class="filters">
-          <h2>Filter Products</h2>
-          <label for="categoryFilter">Category</label>
-          <select id="categoryFilter">
-            <option value="">All categories</option>
-            <option value="electronics">Electronics</option>
-            <option value="clothing">Clothing</option>
-            <option value="groceries">Groceries</option>
-            <option value="home-kitchen">Home &amp; Kitchen</option>
-          </select>
-          <label for="minPrice">Minimum price (LKR)</label
-          ><input id="minPrice" type="number" min="0" placeholder="0" />
-          <label for="maxPrice">Maximum price (LKR)</label
-          ><input id="maxPrice" type="number" min="0" placeholder="100000" />
-          <button type="button" id="applyFilters">Apply Filters</button>
-        </aside>
-        <div class="catalogue-content">
-          <div class="section-heading">
-            <h2>Products</h2>
-            <label for="sortProducts">Sort by</label
-            ><select id="sortProducts">
-              <option value="featured">Featured</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="name">Name</option>
-            </select>
-          </div>
-          <div class="product-container" id="productList" aria-live="polite">
-            <article class="product-card">
-              <a href="product-details.html?id=wireless-headphones"
-                ><img
-                  src="assets/images/product-headphones.png"
-                  alt="Wireless headphones"
-              /></a>
-              <h3>Wireless Headphones</h3>
-              <p class="product-price">LKR 8,500.00</p>
-              <button
-                class="add-to-cart"
-                type="button"
-                data-product-id="wireless-headphones"
-              >
-                Add to Cart
-              </button>
-            </article>
-            <article class="product-card">
-              <a href="product-details.html?id=laptop"
-                ><img src="assets/images/product-laptop.png" alt="Laptop"
-              /></a>
-              <h3>Laptop</h3>
-              <p class="product-price">LKR 85,000.00</p>
-              <button
-                class="add-to-cart"
-                type="button"
-                data-product-id="laptop"
-              >
-                Add to Cart
-              </button>
-            </article>
-            <article class="product-card">
-              <a href="product-details.html?id=smart-watch"
-                ><img src="assets/images/product-smartwatch.png" alt="Smart watch"
-              /></a>
-              <h3>Smart Watch</h3>
-              <p class="product-price">LKR 15,000.00</p>
-              <button
-                class="add-to-cart"
-                type="button"
-                data-product-id="smart-watch"
-              >
-                Add to Cart
-              </button>
-            </article>
-          </div>
+        <div class="navbar">
+
+            <a href="index.html" class="logo">SmartMart</a>
+
+            <nav aria-label="Main navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <!-- SEARCH FORM -->
+            <form
+                class="search-form"
+                id="searchForm"
+                role="search"
+            >
+                <label class="visually-hidden" for="searchInput">
+                    Search products
+                </label>
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search products..."
+                >
+
+                <button type="submit" id="searchBtn">
+                    Search
+                </button>
+            </form>
+
+            <a href="wishlist.html" class="wishlist-link">
+                Wishlist
+            </a>
+
+            <a href="cart.html" class="cart-link">
+                Cart (<span id="cartCount">0</span>)
+            </a>
+
+            <a href="login.html" class="account-link">
+                Login
+            </a>
+
         </div>
-      </section>
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+
+        <section class="page-intro">
+            <h1>All Products</h1>
+            <p>Browse our products and find what you need.</p>
+        </section>
+
+
+        <section class="catalogue">
+
+            <!-- FILTER SIDEBAR -->
+            <aside class="filters">
+
+                <h2>Filter Products</h2>
+
+                <label for="categoryFilter">
+                    Category
+                </label>
+
+                <select id="categoryFilter">
+                    <option value="">All categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="home-kitchen">Home & Kitchen</option>
+                </select>
+
+
+                <label for="minPrice">
+                    Minimum price (LKR)
+                </label>
+
+                <input
+                    id="minPrice"
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                >
+
+
+                <label for="maxPrice">
+                    Maximum price (LKR)
+                </label>
+
+                <input
+                    id="maxPrice"
+                    type="number"
+                    min="0"
+                    placeholder="100000"
+                >
+
+
+                <button type="button" id="applyFilters">
+                    Apply Filters
+                </button>
+
+            </aside>
+
+
+            <!-- PRODUCT SECTION -->
+            <div class="catalogue-content">
+
+                <div class="section-heading">
+
+                    <h2>Products</h2>
+
+                    <label for="sortProducts">
+                        Sort by
+                    </label>
+
+                    <select id="sortProducts">
+                        <option value="featured">Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name">Name</option>
+                    </select>
+
+                </div>
+
+
+                <!-- PRODUCTS WILL BE GENERATED BY JAVASCRIPT -->
+                <div
+                    class="product-container"
+                    id="productList"
+                    aria-live="polite"
+                >
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
+
+
+    <!-- FOOTER -->
     <footer class="site-footer">
-      <p>
-        &copy; 2026 SmartMart. Educational project for ITE 1713 – Web Design.
-      </p>
-      <nav aria-label="Footer navigation">
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="admin-dashboard.html">Demo Admin</a>
-      </nav>
+
+        <p>
+            &copy; 2026 SmartMart.
+            Educational project for ITE 1713 – Web Design.
+        </p>
+
+        <nav aria-label="Footer navigation">
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="admin-dashboard.html">Demo Admin</a>
+        </nav>
+
     </footer>
+
+
+    <!-- JAVASCRIPT -->
     <script src="js/app.js" defer></script>
-  </body>
+
+</body>
 </html>
