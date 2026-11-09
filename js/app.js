@@ -902,53 +902,44 @@ function displayCart() {
 
         cartItemElement.innerHTML = `
             <img
+                class="cart-item-image"
                 src="${product.image}"
                 alt="${product.name}"
                 width="100"
             >
 
-            <div class="cart-item-details">
-
+            <div class="cart-item-info">
                 <h3>${product.name}</h3>
+                <p>Unit price: ${formatPrice(item.price)}</p>
+            </div>
 
-                <p>Price: ${formatPrice(item.price)}</p>
+            <div class="quantity-controls">
+                <button
+                    type="button"
+                    class="quantity-decrease"
+                    data-product-id="${item.productId}"
+                    aria-label="Decrease quantity"
+                >-</button>
 
-                <p>
-                    Item Total:
-                    ${formatPrice(item.price * item.quantity)}
-                </p>
-
-                <div class="quantity-controls">
-
-                    <button
-                        type="button"
-                        class="quantity-decrease"
-                        data-product-id="${item.productId}"
-                    >
-                        -
-                    </button>
-
-                    <span>${item.quantity}</span>
-
-                    <button
-                        type="button"
-                        class="quantity-increase"
-                        data-product-id="${item.productId}"
-                    >
-                        +
-                    </button>
-
-                </div>
+                <span aria-live="polite">${item.quantity}</span>
 
                 <button
                     type="button"
-                    class="remove-cart-item"
+                    class="quantity-increase"
                     data-product-id="${item.productId}"
-                >
-                    Remove
-                </button>
-
+                    aria-label="Increase quantity"
+                >+</button>
             </div>
+
+            <p class="cart-item-total">
+                ${formatPrice(item.price * item.quantity)}
+            </p>
+
+            <button
+                type="button"
+                class="remove-btn remove-cart-item"
+                data-product-id="${item.productId}"
+            >Remove</button>
         `;
 
         cartItemsContainer.appendChild(cartItemElement);
