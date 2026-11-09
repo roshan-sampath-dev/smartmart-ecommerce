@@ -435,7 +435,7 @@ function findProductById(productId) {
 // 12. ADD PRODUCT TO CART
 // =====================================================
 
-function addToCart(productId) {
+function addToCart(productId, requestedQuantity = 1) {
 
     const selectedProduct = findProductById(productId);
 
@@ -447,6 +447,13 @@ function addToCart(productId) {
 
         return;
 
+    }
+
+    const quantityToAdd = Number(requestedQuantity);
+
+    if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) {
+        alert("Please select a valid quantity.");
+        return;
     }
 
     // Find existing cart item
@@ -472,9 +479,9 @@ function addToCart(productId) {
 
     // Check stock availability
 
-    if (currentQuantity >= selectedProduct.stock) {
+    if (currentQuantity + quantityToAdd > selectedProduct.stock) {
 
-        alert("Sorry! Maximum available stock reached.");
+        alert("Sorry! Requested quantity exceeds available stock.");
 
         return;
 
@@ -484,7 +491,7 @@ function addToCart(productId) {
 
     if (existingCartItem !== null) {
 
-        existingCartItem.quantity++;
+        existingCartItem.quantity += quantityToAdd;
 
     }
 
@@ -500,7 +507,7 @@ function addToCart(productId) {
 
             price: selectedProduct.price,
 
-            quantity: 1
+            quantity: quantityToAdd
 
         };
 
@@ -640,29 +647,31 @@ function calculateCartSubtotal() {
 
 
 // =====================================================
-// 17. PRODUCT BUTTON EVENT LISTENER
+// 17. SITE-WIDE ADD TO CART EVENT LISTENER
 // =====================================================
 
-// Event delegation allows dynamically created buttons
-// to work without attaching separate listeners.
+// Handles buttons on the homepage, catalogue and details page.
 
-if (productContainer) {
+document.addEventListener("click", function (event) {
 
-    productContainer.addEventListener("click", function (event) {
+    const button = event.target.closest(".add-to-cart");
 
-        const button = event.target.closest(".add-to-cart");
+    if (!button || button.disabled) {
+        return;
+    }
 
-        if (!button || !productContainer.contains(button)) {
-            return;
-        }
+    const productId = button.dataset.productId;
 
-        const productId = button.dataset.productId;
+    if (!productId) {
+        return;
+    }
 
-        addToCart(productId);
+    const quantityInput = document.getElementById("productQuantity");
+    const quantity = quantityInput ? Number(quantityInput.value) : 1;
 
-    });
+    addToCart(productId, quantity);
 
-}
+});
 
 
 // =====================================================
@@ -730,6 +739,78 @@ if (sortProducts) {
 // =====================================================
 // 22. INITIALIZE APPLICATION
 // =====================================================
+
+// Restore search and category selections from URL parameters.
+
+const pageParams = new URLSearchParams(window.location.search);
+
+if (searchInput && pageParams.has("q")) {
+    searchInput.value = pageParams.get("q") || "";
+}
+
+if (categoryFilter && pageParams.has("category")) {
+    categoryFilter.value = pageParams.get("category") || "";
+}
+
+// Load product details from the selected product ID.
+
+function initializeProductDetails() {
+
+    const productName = document.getElementById("productName");
+
+    if (!productName) {
+        return;
+    }
+
+    const productId = pageParams.get("id") || "wireless-headphones";
+    const product = findProductById(productId);
+
+    const productPrice = document.getElementById("productPrice");
+    const stockStatus = document.getElementById("stockStatus");
+    const productImage = document.querySelector(".product-gallery img");
+    const addButton = document.querySelector(".product-information .add-to-cart");
+    const quantityInput = document.getElementById("productQuantity");
+
+    if (!product) {
+        productName.textContent = "Product not found";
+
+        if (productPrice) productPrice.textContent = "";
+        if (stockStatus) stockStatus.textContent = "This product is unavailable.";
+        if (addButton) addButton.disabled = true;
+
+        return;
+    }
+
+    productName.textContent = product.name;
+
+    if (productPrice) {
+        productPrice.textContent = formatPrice(product.price);
+    }
+
+    if (stockStatus) {
+        stockStatus.textContent = product.stock > 0
+            ? `Availability: ${product.stock} in stock`
+            : "Out of stock";
+    }
+
+    if (productImage) {
+        productImage.src = product.image;
+        productImage.alt = product.name;
+    }
+
+    if (addButton) {
+        addButton.dataset.productId = product.id;
+        addButton.disabled = product.stock === 0;
+    }
+
+    if (quantityInput) {
+        quantityInput.max = product.stock;
+        quantityInput.value = "1";
+        quantityInput.disabled = product.stock === 0;
+    }
+}
+
+initializeProductDetails();
 
 updateProducts();
 
